@@ -1,5 +1,6 @@
 import User from "../models/User.js";
-
+// Importamos módulo de jsonwebtoken -> Para elaborar y entregar una llave de acceso
+import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 async function login(req, res) {
@@ -16,10 +17,18 @@ async function login(req, res) {
         const match = await bcrypt.compare(req.body.password, user.password);
 
         if (match) { // Si match es igual a true
-            return res.json("Te damos la bienvenida -> (Las credenciales coinciden)");
+            // Elaborar y entregar una llave de acceso (TOKEN)
+
+            //.sign() -> Método de jwt -> Recibe 2 parametros ->
+            // 1ero -> 1 Objeto -> Lugar donde vamos a poder guardar información que este dentro de la llave (TOKEN)
+            // 2do -> 1 String -> Clave que va a ir en el token para identificarlo -> Todos los tokens van a estar firmados por medio de este String Secreto, para reconocer si es un TOKEN creado por nosotros
+
+            // Generación de la llave (TOKEN) con la información necesitada
+            const token = jwt.sign({ prueba: "123", id: user.id }, process.env.JWT_SECRET_STRING);
+            return res.json({ token: token }); // Entregar al usuario la llave (TOKEN)
         };
     };
-
+ 
     return res.json("Acceso denegado, las credenciales no coinciden");
 
 };

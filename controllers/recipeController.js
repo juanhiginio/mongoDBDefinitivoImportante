@@ -26,6 +26,9 @@ const getById = async (req,res) => {
 };
 
 const createRecipe = async (req, res) => {
+
+    console.log(req.auth);
+
     try {
         const newRecipe = await Recipe.create({
             title: req.body.title,
@@ -36,7 +39,8 @@ const createRecipe = async (req, res) => {
                 total: req.body.preparation.total,
             },
             instructions: req.body.instructions,
-            user: req.body.user,
+            // Accedemos a la propiedad id que viene dentro del token al ser creado -> Por medio del método auth que se crea automaticamente al un usuario tenerun token o que se le haya generado un token
+            user: req.auth.id,
         });
     
         return res.status(201).json(newRecipe);

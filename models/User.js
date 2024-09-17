@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
+    avatar: String, // Ya que este almacenara la ruta de la imagen, y no la imagen en sí
     age: Number,
     deletedAt: {
         type: Date,
@@ -20,8 +21,19 @@ const userSchema = mongoose.Schema({
     }
 }, {
     timestamps: true,
+    // Para que se puedan crear propiedades virtuales
+    toJSON: {
+        virtuals: true,
+    }
 }
 );
+
+// Propiedades virtuales -> Propiedades que no se veran reflejadas en la base de datos, solo existen de manera virtual
+
+// Creamos una propiedad virtual llamada fullname que me va a OBTENER (get) 
+userSchema.virtual("fullName").get(function() {
+    return this.firstName + " " + this.lastName;
+});
 
 // "Middleware" -> Función que se ejecuta previo al guardado 
 // Antes de guardar un usuario, ejecutar esta función
